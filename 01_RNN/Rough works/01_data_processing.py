@@ -11,4 +11,14 @@ import unicodedata
 
 allowed_char = string.ascii_letters + ".,;'" + "_"
 print(allowed_char)
+# %% unicode to Ascii
+def unicode_to_ascii(txt: str) -> str:
+    return ''.join(c for c in unicodedata.normalize('NFD', txt) if unicodedata.category(c) != 'Mn' and c in allowed_char)
+
+test = 'Ślusàrski'
+out = unicode_to_ascii(test)
+print(out)
 # %%
+
+def encode_text(txt: str) -> t.Tensor:
+    
