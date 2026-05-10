@@ -34,4 +34,11 @@ def encode_text(txt: str) -> t.Tensor:
 test_w = 'Ślusàrski'
 t_out = encode_text(test_w)
 print(t_out)
+# %% Read files
+from io import open
+
+path = '/Users/dhamodharan/My-Python/AI-Tutorials/04_NLP/NLP/01_RNN/data/names/Arabic.txt'
+lines = open(path, 'r', encoding='utf-8').read().strip().split('\n')
+print(lines)
+
 # %%
