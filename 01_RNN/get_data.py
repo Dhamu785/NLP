@@ -65,3 +65,8 @@ class NameDataset(Dataset):
         lbl_tensor = self.label_tensor[idx]
 
         return name, lbl, name_tensor, lbl_tensor
+
+if __name__ == "__main__":
+    data = NameDataset('/Users/dhamodharan/My-Python/AI-Tutorials/04_NLP/NLP/01_RNN/data/names')
+    print(f"Length of the dataset = {len(data)}")
+    print(f"Sample = {data[0]}")
