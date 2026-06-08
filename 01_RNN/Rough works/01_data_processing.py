@@ -41,4 +41,19 @@ path = '/Users/dhamodharan/My-Python/AI-Tutorials/04_NLP/NLP/01_RNN/data/names/A
 lines = open(path, 'r', encoding='utf-8').read().strip().split('\n')
 print(lines)
 
+# %% Testing of RNN layer
+
+import torch as t
+import torch.nn as nn
+
+rnn = nn.RNN(input_size=6, hidden_size=10)
+inp = t.randn(size=(10, 1, 6))
+out = rnn(inp)
+# %%
+out[0].shape , out[1].shape
+# %%
+print(out[0][-1])
+print(out[1][-1])
+
+print(t.isclose(out[0][-1], out[1][-1]))
 # %%
