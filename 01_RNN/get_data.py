@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 
 class helper:
     def __init__(self) -> None:
-        self.allowed_char = string.ascii_letters + ".,;'" + "_"
+        self.allowed_char = string.ascii_letters + " .,;'" + "_"
         self.len_allowed_char = len(self.allowed_char)
 
     def unicode_to_ascii(self, txt: str) -> str:
@@ -64,9 +64,10 @@ class NameDataset(Dataset):
         name_tensor = self.data_tensor[idx]
         lbl_tensor = self.label_tensor[idx]
 
-        return name, lbl, name_tensor, lbl_tensor
+        return lbl_tensor, name_tensor, lbl, name
 
 if __name__ == "__main__":
     data = NameDataset('/Users/dhamodharan/My-Python/AI-Tutorials/04_NLP/NLP/01_RNN/data/names')
     print(f"Length of the dataset = {len(data)}")
     print(f"Sample = {data[0]}")
+    print(f"Name tensor shape = {data[0][1].shape}")
