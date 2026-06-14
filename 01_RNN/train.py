@@ -12,3 +12,4 @@ model = rnn_model(input_len, hidden, out_len)
 print(model)
 
 all_losses = train(model, data)
+print(all_losses)
