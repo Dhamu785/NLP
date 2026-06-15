@@ -7,3 +7,4 @@ class CONFIG:
     report_every = 5
     loss = nn.NLLLoss()
     optimizer = t.optim.SGD
+    device = 'cuda' if t.cuda.is_available() else 'cpu'

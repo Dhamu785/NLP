@@ -22,7 +22,8 @@ def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size,
             optimizer=design.optimizer):
     current_loss = 0
     all_loss = []
-
+    rnn.to(design.device)
+    print(f"Model loaded on = {next(rnn.parameters()).device}")
     rnn.train()
     optim = optimizer(rnn.parameters(), lr=lr)
 
@@ -40,8 +41,8 @@ def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size,
                 optim.zero_grad()
                 for i in batch:
                     (lbl_tensor, txt_tensor, lbl, txt) = train_data[i]
-                    output = rnn(txt_tensor)
-                    ls = loss(output, lbl_tensor)
+                    output = rnn(txt_tensor.to(design.device))
+                    ls = loss(output, lbl_tensor.to(design.device))
                     batch_loss += ls
 
                 batch_loss.backward()
