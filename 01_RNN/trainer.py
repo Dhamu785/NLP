@@ -2,6 +2,8 @@ import random
 import numpy as np 
 from config import CONFIG
 
+import torch.nn as nn
+
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, SpinnerColumn
 progress = Progress(
     SpinnerColumn(spinner_name='dots', style='green'),
@@ -46,6 +48,7 @@ def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size,
                     batch_loss += ls
 
                 batch_loss.backward()
+                nn.utils.clip_grad_norm_(rnn.parameters(), 3)
                 optim.step()
 
                 avg_batch_loss = batch_loss.item() / len(batch)

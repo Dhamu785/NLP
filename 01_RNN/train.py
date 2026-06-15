@@ -3,7 +3,7 @@ from model import rnn_model
 from get_data import helper, NameDataset
 
 # data = NameDataset('/Users/dhamodharan/My-Python/AI-Tutorials/04_NLP/NLP/01_RNN/data/names')
-data = NameDataset('C:\\Users\\dhamu\\Documents\\Python all\\torch_works\\04\\NLP\\01_RNN\\data')
+data = NameDataset('C:\\Users\\dhamu\\Documents\\Python all\\torch_works\\04\\NLP\\01_RNN\\data\\names')
 input_len = helper().len_allowed_char
 hidden = 128
 out_len = len(data.unique_labels)
