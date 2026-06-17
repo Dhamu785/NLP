@@ -1,8 +1,11 @@
+import os
+import shutil
 import random
 import numpy as np 
 from config import CONFIG
 
 import torch.nn as nn
+import torch as t
 
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, SpinnerColumn
 progress = Progress(
@@ -19,19 +22,32 @@ progress = Progress(
 
 design = CONFIG()
 
+sav_loc = '.\\runs'
+if not os.path.exists(sav_loc):
+    os.mkdir(sav_loc)
+
 def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size, 
-            report_every=design.report_every, lr=design.lr, loss=design.loss, 
-            optimizer=design.optimizer):
-    current_loss = 0
+            lr=design.lr, loss=design.loss, optimizer=design.optimizer, resume=False):
     all_loss = []
+    start_epoch = 1
     rnn.to(design.device)
     print(f"Model loaded on = {next(rnn.parameters()).device}")
-    rnn.train()
     optim = optimizer(rnn.parameters(), lr=lr)
+    if resume:
+        ckpt = t.load(os.path.join(sav_loc, 'latest.pt'), map_location=design.device, weights_only=False)
+        rnn.load_state_dict(ckpt['model_state_dict'])
+        optim.load_state_dict(ckpt['optimizer_state_dict'])
+        start_epoch = ckpt['epoch']+1
+        all_loss = ckpt['all_loss']
+        batch_size = ckpt['batch_size']
+        print(f"Resume training...")
+
+    current_loss = 0
+    rnn.train()
 
     with progress:
-        epoch_task = progress.add_task("Learning :", total=epochs, loss=0.0)
-        for epoch in range(1, epochs+1):
+        epoch_task = progress.add_task("Learning :", total=(epochs+1)-start_epoch, loss=0.0)
+        for epoch in range(start_epoch, epochs+1):
             rnn.zero_grad()
 
             batches = list(range(len(train_data)))
@@ -57,9 +73,20 @@ def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size,
 
             progress.remove_task(batch_task)
             all_loss.append(current_loss/len(batches)) 
-            # if epoch % report_every == 0:
-            #     print(f"{epoch}/{epochs} | loss = {all_loss[-1]}")
             current_loss = 0
+
+            # Save the checkpoints
+            checkpoint = {
+                            'epoch': epoch, 'loss': all_loss[-1], 
+                            # Model
+                            'model_state_dict': rnn.state_dict(),
+                            # optimizer
+                            'optimizer_state_dict' : optim.state_dict(),
+                            'lr' : lr,
+                            'batch_size' : batch_size,
+                            'all_loss' : all_loss
+                            }
+            t.save(checkpoint, './runs/latest.pt')
             progress.update(epoch_task, advance=1, loss=f"{all_loss[-1]:.4f}")
 
     return all_loss

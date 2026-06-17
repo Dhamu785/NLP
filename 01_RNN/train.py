@@ -12,5 +12,5 @@ print(f"{len(data) = }, {out_len = }, {input_len = }")
 model = rnn_model(input_len, hidden, out_len)
 # print(model)
 
-all_losses = train(model, data)
+all_losses = train(model, data, resume=True)
 print(all_losses)
