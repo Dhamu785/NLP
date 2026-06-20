@@ -1,8 +1,8 @@
 import os
-import shutil
 import random
 import numpy as np 
 from config import CONFIG
+import wandb
 
 import torch.nn as nn
 import torch as t
@@ -20,9 +20,18 @@ progress = Progress(
     TimeRemainingColumn()
 )
 
+run = wandb.init(entity="dhamu", project="RNN", 
+                    config={
+                        'learning_rate':0.012,
+                        'architecture':'RNN',
+                        'dataset': 'names classifier',
+                        'epochs' : 10
+                    }, name='e10_b32', id='test1')
+
 design = CONFIG()
 
-sav_loc = '.\\runs'
+cwd = os.getcwd()
+sav_loc = os.path.join(cwd, 'runs')
 if not os.path.exists(sav_loc):
     os.mkdir(sav_loc)
 
@@ -86,7 +95,9 @@ def train(rnn, train_data, epochs=design.epochs, batch_size=design.batch_size,
                             'batch_size' : batch_size,
                             'all_loss' : all_loss
                             }
+            run.log({"Loss":all_loss[-1]})
             t.save(checkpoint, './runs/latest.pt')
             progress.update(epoch_task, advance=1, loss=f"{all_loss[-1]:.4f}")
+        run.finish()
 
     return all_loss

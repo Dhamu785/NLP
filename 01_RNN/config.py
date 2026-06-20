@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch as t
 class CONFIG:
-    epochs = 5
+    epochs = 10
     batch_size = 32
     lr = 0.15
     report_every = 5
